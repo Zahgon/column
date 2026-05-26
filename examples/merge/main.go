@@ -4,7 +4,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/kelindar/column"
@@ -82,22 +81,15 @@ func main() {
 
 // parseMovement parses a value string into a Movement struct
 func parseMovement(value string) (out Movement, ok bool) {
-	if err := json.Unmarshal([]byte(value), &out); err != nil {
-		return Movement{}, false
-	}
-	return out, true
+	_ = "STUB: not implemented"
+	return *new(Movement), false
 }
 
 // parseVector parses a value string into 2 dimensional array
 func parseVector(value string) (out [2]float64, ok bool) {
-	if err := json.Unmarshal([]byte(value), &out); err != nil {
-		return [2]float64{}, false
-	}
-	return out, true
+	_ = "STUB: not implemented"
+	return nil, false
 }
 
 // encodes encodes the value as JSON
-func encode(value any) string {
-	encoded, _ := json.Marshal(value)
-	return string(encoded)
-}
+func encode(value any) string { _ = "STUB: not implemented"; return "" }

@@ -9,7 +9,6 @@ import (
 	"sync"
 
 	"github.com/kelindar/iostream"
-	"github.com/klauspost/compress/s2"
 )
 
 // Logger represents a contract that a commit logger must implement
@@ -27,10 +26,7 @@ var _ Logger = new(Log)
 type Channel chan Commit
 
 // Append clones the commit and writes it into the logger
-func (w Channel) Append(commit Commit) error {
-	w <- commit.Clone()
-	return nil
-}
+func (w Channel) Append(commit Commit) error { _ = "STUB: not implemented"; return nil }
 
 // --------------------------- Log ----------------------------
 
@@ -44,108 +40,40 @@ type Log struct {
 }
 
 // Open opens a commit log stream for both read and write.
-func Open(source io.Reader) *Log {
-	log := &Log{
-		source: source,
-		reader: iostream.NewReader(s2.NewReader(source)),
-	}
-
-	if rw, ok := source.(io.Writer); ok {
-		log.writer = iostream.NewWriter(s2.NewWriter(rw))
-	}
-	return log
-}
+func Open(source io.Reader) *Log { _ = "STUB: not implemented"; return nil }
 
 // OpenFile opens a specified commit log file in a read/write mode. If
 // the file does not exist, it will create it.
-func OpenFile(filename string) (*Log, error) {
-	return openFile(os.OpenFile(filename, os.O_RDWR|os.O_CREATE, os.ModePerm))
-}
+func OpenFile(filename string) (*Log, error) { _ = "STUB: not implemented"; return nil, nil }
 
 // OpenTemp opens a temporary commit log file with read/write permissions
-func OpenTemp() (*Log, error) {
-	return openFile(os.CreateTemp("", "column_*.log"))
-}
+func OpenTemp() (*Log, error) { _ = "STUB: not implemented"; return nil, nil }
 
 // openFile opens a file or returns the error provided
-func openFile(file *os.File, err error) (*Log, error) {
-	if err != nil {
-		return nil, err
-	}
-
-	return Open(file), nil
-}
+func openFile(file *os.File, err error) (*Log, error) { _ = "STUB: not implemented"; return nil, nil }
 
 // Append writes the commit into the log destination
-func (l *Log) Append(commit Commit) (err error) {
-	l.lock.Lock()
-	defer l.lock.Unlock()
+func (l *Log) Append(commit Commit) (err error) { _ = "STUB: not implemented"; return nil }
 
-	// Write the commit into the stream
-	if _, err = commit.WriteTo(l.writer); err == nil {
-		err = l.writer.Flush()
-	}
-	return
-}
+// Write the commit into the stream
 
 // Range iterates over all the commits in the log and calls the provided
 // callback function on each of them. If the callback returns an error, the
 // iteration will stop.
-func (l *Log) Range(fn func(Commit) error) error {
-	l.lock.Lock()
-	defer l.lock.Unlock()
+func (l *Log) Range(fn func(Commit) error) error { _ = "STUB: not implemented"; return nil }
 
-	for {
-		var commit Commit
-		_, err := commit.ReadFrom(l.reader)
-		switch {
-		case err == io.EOF:
-			return nil
-		case err != nil:
-			return err
-		}
-
-		// Read the commit
-		if err := fn(commit); err != nil {
-			return err
-		}
-	}
-}
+// Read the commit
 
 // Name calls the corresponding Name() method on the underlying source
-func (l *Log) Name() (name string) {
-	if file, ok := l.source.(interface {
-		Name() string
-	}); ok {
-		name = file.Name()
-	}
-	return
-}
+func (l *Log) Name() (name string) { _ = "STUB: not implemented"; return "" }
 
 // Copy copies the contents of the log into the destination writer.
-func (l *Log) Copy(dst io.Writer) error {
-	l.lock.Lock()
-	defer l.lock.Unlock()
+func (l *Log) Copy(dst io.Writer) error { _ = "STUB: not implemented"; return nil }
 
-	// Rewind to the beginning of the file, the underlying source must
-	// implement io.Seeker for this to work.
-	if seeker, ok := l.source.(io.Seeker); ok {
-		if _, err := seeker.Seek(0, io.SeekStart); err != nil {
-			return err
-		}
-	}
+// Rewind to the beginning of the file, the underlying source must
+// implement io.Seeker for this to work.
 
-	// Append the pending commits to the destination
-	_, err := io.Copy(dst, l.source)
-	return err
-}
+// Append the pending commits to the destination
 
 // Close closes the source log file.
-func (l *Log) Close() (err error) {
-	l.lock.Lock()
-	defer l.lock.Unlock()
-	if closer, ok := l.source.(io.Closer); ok {
-		err = closer.Close()
-	}
-	return
-}
+func (l *Log) Close() (err error) { _ = "STUB: not implemented"; return nil }

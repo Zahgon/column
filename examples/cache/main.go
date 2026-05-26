@@ -5,8 +5,6 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"time"
 
 	"github.com/kelindar/xxrand"
 )
@@ -34,23 +32,8 @@ func main() {
 	}, 100000)
 }
 
-func measure(action, name string, fn func(), iterations int) {
-	defer func(start time.Time, stdout *os.File) {
-		os.Stdout = stdout
-		elapsed := time.Since(start) / time.Duration(iterations)
-		fmt.Printf("-> %v took %v\n", action, elapsed.String())
-	}(time.Now(), os.Stdout)
+func measure(action, name string, fn func(), iterations int) { _ = "STUB: not implemented"; return }
 
-	fmt.Println()
-	fmt.Printf("running %v of %v...\n", action, name)
+// Run a few times so the results are more stable
 
-	// Run a few times so the results are more stable
-	null, _ := os.Open(os.DevNull)
-	for i := 0; i < iterations; i++ {
-		if i > 0 { // Silence subsequent runs
-			os.Stdout = null
-		}
-
-		fn()
-	}
-}
+// Silence subsequent runs

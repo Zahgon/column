@@ -4,7 +4,6 @@
 package column
 
 import (
-	"fmt"
 	"reflect"
 	"sync"
 
@@ -22,15 +21,7 @@ const (
 )
 
 // typeOf resolves all supported types of the column
-func typeOf(column Column) (typ columnType) {
-	if _, ok := column.(Numeric); ok {
-		typ = typ | typeNumeric
-	}
-	if _, ok := column.(Textual); ok {
-		typ = typ | typeTextual
-	}
-	return
-}
+func typeOf(column Column) (typ columnType) { _ = "STUB: not implemented"; return *new(columnType) }
 
 // --------------------------- Contracts ----------------------------
 
@@ -84,34 +75,8 @@ var (
 
 // ForKind creates a new column instance for a specified reflect.Kind
 func ForKind(kind reflect.Kind) (Column, error) {
-	switch kind {
-	case reflect.Float32:
-		return makeFloat32s(), nil
-	case reflect.Float64:
-		return makeFloat64s(), nil
-	case reflect.Int:
-		return makeInts(), nil
-	case reflect.Int16:
-		return makeInt16s(), nil
-	case reflect.Int32:
-		return makeInt32s(), nil
-	case reflect.Int64:
-		return makeInt64s(), nil
-	case reflect.Uint:
-		return makeUints(), nil
-	case reflect.Uint16:
-		return makeUint16s(), nil
-	case reflect.Uint32:
-		return makeUint32s(), nil
-	case reflect.Uint64:
-		return makeUint64s(), nil
-	case reflect.Bool:
-		return makeBools(), nil
-	case reflect.String:
-		return makeStrings(), nil
-	default:
-		return nil, fmt.Errorf("column: unsupported column kind (%v)", kind)
-	}
+	_ = "STUB: not implemented"
+	return *new(Column), nil
 }
 
 // --------------------------- Generic Options ----------------------------
@@ -123,18 +88,15 @@ type option[T any] struct {
 
 // configure applies options
 func configure[T any](opts []func(*option[T]), dst option[T]) option[T] {
-	for _, fn := range opts {
-		fn(&dst)
-	}
-	return dst
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // WithMerge sets an optional merge function that allows you to merge a delta value to
 // an existing value, atomically. The operation is performed transactionally.
 func WithMerge[T any](fn func(value, delta T) T) func(*option[T]) {
-	return func(v *option[T]) {
-		v.Merge = fn
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // --------------------------- Column ----------------------------
@@ -148,69 +110,39 @@ type column struct {
 }
 
 // columnFor creates a synchronized column for a column implementation
-func columnFor(name string, v Column) *column {
-	return &column{
-		kind:   typeOf(v),
-		name:   name,
-		Column: v,
-	}
-}
+func columnFor(name string, v Column) *column { _ = "STUB: not implemented"; return nil }
 
 // IsIndex returns whether the column is an index
-func (c *column) IsIndex() bool {
-	_, ok := c.Column.(*columnIndex)
-	return ok
-}
+func (c *column) IsIndex() bool { _ = "STUB: not implemented"; return false }
 
 // IsNumeric checks whether a column type supports certain numerical operations.
-func (c *column) IsNumeric() bool {
-	return (c.kind & typeNumeric) == typeNumeric
-}
+func (c *column) IsNumeric() bool { _ = "STUB: not implemented"; return false }
 
 // IsTextual checks whether a column type supports certain string operations.
-func (c *column) IsTextual() bool {
-	return (c.kind & typeTextual) == typeTextual
-}
+func (c *column) IsTextual() bool { _ = "STUB: not implemented"; return false }
 
 // Grow grows the size of the column
-func (c *column) Grow(idx uint32) {
-	c.lock.Lock()
-	defer c.lock.Unlock()
-
-	c.Column.Grow(idx)
-}
+func (c *column) Grow(idx uint32) { _ = "STUB: not implemented"; return }
 
 // Apply performs a series of operations on a column.
-func (c *column) Apply(chunk commit.Chunk, r *commit.Reader) {
-	c.lock.RLock()
-	defer c.lock.RUnlock()
-
-	r.Rewind()
-	c.Column.Apply(chunk, r)
-}
+func (c *column) Apply(chunk commit.Chunk, r *commit.Reader) { _ = "STUB: not implemented"; return }
 
 // Index loads the appropriate column index for a given chunk
 func (c *column) Index(chunk commit.Chunk) bitmap.Bitmap {
-	c.lock.RLock()
-	defer c.lock.RUnlock()
-	return c.Column.Index(chunk)
+	_ = "STUB: not implemented"
+	return *new(bitmap.Bitmap)
 }
 
 // Snapshot takes a snapshot of a column, skipping indexes
 func (c *column) Snapshot(chunk commit.Chunk, buffer *commit.Buffer) bool {
-	if c.IsIndex() {
-		return false
-	}
-
-	buffer.Reset(c.name)
-	c.Column.Snapshot(chunk, buffer)
-	return true
+	_ = "STUB: not implemented"
+	return false
 }
 
 // Value retrieves a value at a specified index
 func (c *column) Value(idx uint32) (v interface{}, ok bool) {
-	v, ok = c.Column.Value(idx)
-	return
+	_ = "STUB: not implemented"
+	return nil, false
 }
 
 // --------------------------- Accessor  ----------------------------
@@ -222,24 +154,7 @@ type reader[T any] struct {
 }
 
 // readerFor creates a read-only accessor
-func readerFor[T any](txn *Txn, columnName string) reader[T] {
-	column, ok := txn.columnAt(columnName)
-	if !ok {
-		panic(fmt.Errorf("column: column '%s' does not exist", columnName))
-	}
-
-	target, ok := column.Column.(T)
-	if !ok {
-		var want T
-		panic(fmt.Errorf("column: column '%s' is not of specified type (has=%T, want=%T)",
-			columnName, column.Column, want))
-	}
-
-	return reader[T]{
-		cursor: &txn.cursor,
-		reader: target,
-	}
-}
+func readerFor[T any](txn *Txn, columnName string) reader[T] { _ = "STUB: not implemented"; return nil }
 
 // --------------------------- Any Writer ----------------------------
 
@@ -250,9 +165,7 @@ type rwAny struct {
 }
 
 // Set sets the value at the current transaction cursor
-func (s rwAny) Set(value any) error {
-	return s.writer.PutAny(commit.Put, *s.cursor, value)
-}
+func (s rwAny) Set(value any) error { _ = "STUB: not implemented"; return nil }
 
 // --------------------------- Any Reader ----------------------------
 
@@ -260,22 +173,13 @@ func (s rwAny) Set(value any) error {
 type rdAny reader[Column]
 
 // Get loads the value at the current transaction cursor
-func (s rdAny) Get() (any, bool) {
-	return s.reader.Value(*s.cursor)
-}
+func (s rdAny) Get() (any, bool) { _ = "STUB: not implemented"; return *new(any), false }
 
 // readAnyOf creates a new any reader
-func readAnyOf(txn *Txn, columnName string) rdAny {
-	return rdAny(readerFor[Column](txn, columnName))
-}
+func readAnyOf(txn *Txn, columnName string) rdAny { _ = "STUB: not implemented"; return *new(rdAny) }
 
 // Any returns a column accessor
-func (txn *Txn) Any(columnName string) rwAny {
-	return rwAny{
-		rdAny:  readAnyOf(txn, columnName),
-		writer: txn.bufferFor(columnName),
-	}
-}
+func (txn *Txn) Any(columnName string) rwAny { _ = "STUB: not implemented"; return *new(rwAny) }
 
 // --------------------------- segment list ----------------------------
 
@@ -287,29 +191,15 @@ type chunks[T any] []struct {
 
 // chunkAt loads the fill and data list at a particular chunk
 func (s chunks[T]) chunkAt(chunk commit.Chunk) (bitmap.Bitmap, []T) {
-	fill := s[chunk].fill
-	data := s[chunk].data
-	return fill, data
+	_ = "STUB: not implemented"
+	return *new(bitmap.Bitmap), nil
 }
 
 // Grow grows a segment list
-func (s *chunks[T]) Grow(idx uint32) {
-	chunk := int(commit.ChunkAt(idx))
-	for i := len(*s); i <= chunk; i++ {
-		*s = append(*s, struct {
-			fill bitmap.Bitmap
-			data []T
-		}{
-			fill: make(bitmap.Bitmap, chunkSize/64),
-			data: make([]T, chunkSize),
-		})
-	}
-}
+func (s *chunks[T]) Grow(idx uint32) { _ = "STUB: not implemented"; return }
 
 // Index returns the fill list for the segment
 func (s chunks[T]) Index(chunk commit.Chunk) (fill bitmap.Bitmap) {
-	if int(chunk) < len(s) {
-		fill = s[chunk].fill
-	}
-	return
+	_ = "STUB: not implemented"
+	return *new(bitmap.Bitmap)
 }

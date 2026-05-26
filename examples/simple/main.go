@@ -1,9 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"os"
-
 	"github.com/kelindar/column"
 )
 
@@ -75,19 +72,7 @@ func main() {
 }
 
 // loadFixture loads a fixture by its name
-func loadFixture(name string) []Player {
-	b, err := os.ReadFile("../../fixtures/" + name)
-	if err != nil {
-		panic(err)
-	}
-
-	var data []Player
-	if err := json.Unmarshal(b, &data); err != nil {
-		panic(err)
-	}
-
-	return data
-}
+func loadFixture(name string) []Player { _ = "STUB: not implemented"; return nil }
 
 // --------------------------- Player ----------------------------
 
@@ -111,10 +96,6 @@ type Location struct {
 	Y float64 `json:"y"`
 }
 
-func (l Location) MarshalBinary() ([]byte, error) {
-	return json.Marshal(l)
-}
+func (l Location) MarshalBinary() ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }
 
-func (l *Location) UnmarshalBinary(b []byte) error {
-	return json.Unmarshal(b, l)
-}
+func (l *Location) UnmarshalBinary(b []byte) error { _ = "STUB: not implemented"; return nil }

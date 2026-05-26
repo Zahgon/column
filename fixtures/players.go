@@ -2,21 +2,13 @@ package fixtures
 
 import (
 	_ "embed"
-	"encoding/json"
 )
 
 //go:embed players.json
 var playerData []byte
 
 // Players loads a set of players
-func Players() []Player {
-	var data []Player
-	if err := json.Unmarshal(playerData, &data); err != nil {
-		panic(err)
-	}
-
-	return data
-}
+func Players() []Player { _ = "STUB: not implemented"; return nil }
 
 // --------------------------- Player ----------------------------
 
@@ -40,10 +32,6 @@ type Location struct {
 	Y float64 `json:"y"`
 }
 
-func (l Location) MarshalBinary() ([]byte, error) {
-	return json.Marshal(l)
-}
+func (l Location) MarshalBinary() ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }
 
-func (l *Location) UnmarshalBinary(b []byte) error {
-	return json.Unmarshal(b, l)
-}
+func (l *Location) UnmarshalBinary(b []byte) error { _ = "STUB: not implemented"; return nil }

@@ -14,49 +14,39 @@ type columnBool struct {
 }
 
 // makeBools creates a new boolean column
-func makeBools() Column {
-	return &columnBool{
-		data: make(bitmap.Bitmap, 0, 4),
-	}
-}
+func makeBools() Column { _ = "STUB: not implemented"; return *new(Column) }
 
 // Grow grows the size of the column until we have enough to store
 func (c *columnBool) Grow(idx uint32) {
-	c.data.Grow(idx)
+	_ = "STUB: not implemented"
+
+	// Apply applies a set of operations to the column.
+	return
 }
 
-// Apply applies a set of operations to the column.
-func (c *columnBool) Apply(chunk commit.Chunk, r *commit.Reader) {
-	for r.Next() {
-		v := uint64(1) << (r.Offset & 0x3f)
-		switch r.Type {
-		case commit.PutTrue:
-			c.data[r.Offset>>6] |= v
-		case commit.PutFalse: // also "delete"
-			c.data[r.Offset>>6] &^= v
-		}
-	}
-}
+func (c *columnBool) Apply(chunk commit.Chunk, r *commit.Reader) { _ = "STUB: not implemented"; return }
+
+// also "delete"
 
 // Value retrieves a value at a specified index
 func (c *columnBool) Value(idx uint32) (interface{}, bool) {
-	value := c.data.Contains(idx)
-	return value, value
+	_ = "STUB: not implemented"
+	return nil, false
 }
 
 // Contains checks whether the column has a value at a specified index.
-func (c *columnBool) Contains(idx uint32) bool {
-	return c.data.Contains(idx)
-}
+func (c *columnBool) Contains(idx uint32) bool { _ = "STUB: not implemented"; return false }
 
 // Index returns the fill list for the column
 func (c *columnBool) Index(chunk commit.Chunk) bitmap.Bitmap {
-	return chunk.OfBitmap(c.data)
+	_ = "STUB: not implemented"
+	return *new(bitmap.Bitmap)
 }
 
 // Snapshot writes the entire column into the specified destination buffer
 func (c *columnBool) Snapshot(chunk commit.Chunk, dst *commit.Buffer) {
-	dst.PutBitmap(commit.PutTrue, chunk, c.data)
+	_ = "STUB: not implemented"
+	return
 }
 
 // --------------------------- Writer ----------------------------
@@ -68,17 +58,10 @@ type rwBool struct {
 }
 
 // Set sets the value at the current transaction cursor
-func (s rwBool) Set(value bool) {
-	s.writer.PutBool(*s.cursor, value)
-}
+func (s rwBool) Set(value bool) { _ = "STUB: not implemented"; return }
 
 // Bool returns a bool column accessor
-func (txn *Txn) Bool(columnName string) rwBool {
-	return rwBool{
-		rdBool: readBoolOf(txn, columnName),
-		writer: txn.bufferFor(columnName),
-	}
-}
+func (txn *Txn) Bool(columnName string) rwBool { _ = "STUB: not implemented"; return *new(rwBool) }
 
 // --------------------------- Reader ----------------------------
 
@@ -86,11 +69,7 @@ func (txn *Txn) Bool(columnName string) rwBool {
 type rdBool reader[Column]
 
 // Get loads the value at the current transaction cursor
-func (s rdBool) Get() bool {
-	return s.reader.Contains(*s.cursor)
-}
+func (s rdBool) Get() bool { _ = "STUB: not implemented"; return false }
 
 // readBoolOf creates a new boolean reader
-func readBoolOf(txn *Txn, columnName string) rdBool {
-	return rdBool(readerFor[Column](txn, columnName))
-}
+func readBoolOf(txn *Txn, columnName string) rdBool { _ = "STUB: not implemented"; return *new(rdBool) }
